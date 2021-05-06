@@ -63,7 +63,7 @@ Tutorial on Authentication and Security - Level 1 - 6.
 
 - With Passport it is possible to authenticate an user for as long as they have the Coookie created by the POST request in their browser
 
-## LEvel 6 - OAuth
+## Level 6 - OAuth
 
 - [x] Add Google OAuth to Web Application
 
