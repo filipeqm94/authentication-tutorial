@@ -24,10 +24,23 @@ Tutorial on Authentication and Security - Level 1 - 6.
 
 #### Notes:
 
-- Users passwords have been encrypted, but secret variable and database url are still visible
+- User's password have been encrypted, but secret variable and database url are still visible
 
 ### Part 2
 
 - [x] Install "dotenv" package
 - [x] Change secret variable and database url
 - [x] Hide secret variable and database url inside .env file
+
+#### Notes:
+
+- If someone gets a hold of the secret variable they can easily decrypt the password
+
+## Level 3
+
+- [x] Install md5 package
+- [x] Utilize md5 to Hash user's passwords
+
+#### Notes:
+
+- There are methods to find and decode commonly used passwords and hack users with that method, if a hacker gains access to the database.
