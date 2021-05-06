@@ -36,7 +36,7 @@ Tutorial on Authentication and Security - Level 1 - 6.
 
 - If someone gets a hold of the secret variable they can easily decrypt the password
 
-## Level 3
+## Level 3 - Hashing
 
 - [x] Install md5 package
 - [x] Utilize md5 to Hash user's passwords
@@ -45,7 +45,7 @@ Tutorial on Authentication and Security - Level 1 - 6.
 
 - There are methods to find and decode commonly used passwords and hack users with that method, if a hacker gains access to the database.
 
-## Level 4
+## Level 4 - Salting + Hashing
 
 - [x] Install bcrypt package
 - [x] Utilize bcrypt to salt and hash user's password.
@@ -53,3 +53,12 @@ Tutorial on Authentication and Security - Level 1 - 6.
 #### Notes:
 
 - With bcrypt's salt + hash method, it is possible to have different values on the database for the same user password. Password secutiry would depend on user (and it's not good because the average user is not the brightest).
+
+## Level 5 - Cookies and Sessions / Authentication with Passport
+
+- [x] Install passport, passport-local, passport-local-mongoose and express-session packages
+- [x] Utilize passport to register, authenticate, login and logout user from website
+
+#### Notes:
+
+- With Passport it is possible to authenticate an user for as long as they have the Coookie created by the POST request in their browser
