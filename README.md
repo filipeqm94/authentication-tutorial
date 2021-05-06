@@ -44,3 +44,12 @@ Tutorial on Authentication and Security - Level 1 - 6.
 #### Notes:
 
 - There are methods to find and decode commonly used passwords and hack users with that method, if a hacker gains access to the database.
+
+## Level 4
+
+- [x] Install bcrypt package
+- [x] Utilize bcrypt to salt and hash user's password.
+
+#### Notes:
+
+- With bcrypt's salt + hash method, it is possible to have different values on the database for the same user password. Password secutiry would depend on user (and it's not good because the average user is not the brightest).
