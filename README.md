@@ -14,3 +14,14 @@ Tutorial on Authentication and Security - Level 1 - 6.
 
 - Users can register with invalid email
 - Password is not encrypted inside Database
+
+## Level 2 - Data Encryption
+
+### Part 1
+
+- [x] Install "mongoose-encrypt" package
+- [x] Set secret variable and implement encrypt method to user's password
+
+#### Notes:
+
+- Users passwords have been encrypted
