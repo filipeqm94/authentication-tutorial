@@ -24,4 +24,10 @@ Tutorial on Authentication and Security - Level 1 - 6.
 
 #### Notes:
 
-- Users passwords have been encrypted
+- Users passwords have been encrypted, but secret variable and database url are still visible
+
+### Part 2
+
+- [x] Install "dotenv" package
+- [x] Change secret variable and database url
+- [x] Hide secret variable and database url inside .env file
