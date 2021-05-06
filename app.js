@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import ejs from "ejs";
 import mongoose from "mongoose";
+import encrypt from "mongoose-encryption";
 
 const app = express();
 
@@ -18,10 +19,13 @@ mongoose.connect("mongodb://localhost:27017/userDB", {
   useUnifiedTopology: true,
 });
 
-const userSchema = {
+const userSchema = new mongoose.Schema({
   email: String,
   password: String,
-};
+});
+
+const secret = "MyMothersMaidenNameIs...";
+userSchema.plugin(encrypt, { secret: secret, encryptedFields: ["password"] });
 
 const User = new mongoose.model("User", userSchema);
 
@@ -40,7 +44,7 @@ app
 
     User.findOne({ email: username }, (err, foundUser) => {
       if (err) {
-        console.log(err);
+        res.status(404).render(err);
       } else {
         if (foundUser) {
           if (foundUser.password === password) {
