@@ -4,8 +4,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
-// const encrypt = require("mongoose-encryption"); //Used for encryption
-const md5 = require("md5");
+// const encrypt = require("mongoose-encryption"); <--- Used for encrypting
+// const md5 = require("md5");    <-------------------- Used for Hashing
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 
 const app = express();
 
@@ -45,16 +47,21 @@ app
   })
   .post((req, res) => {
     const username = req.body.username;
-    const password = md5(req.body.password);
+    // const password = md5(req.body.password); <---------- Used for Hashing
+    const password = req.body.password;
 
     User.findOne({ email: username }, (err, foundUser) => {
       if (err) {
         res.status(404).render(err);
       } else {
         if (foundUser) {
-          if (foundUser.password === password) {
-            res.render("secrets");
-          }
+          bcrypt.compare(password, foundUser.password, (err, result) => {
+            if (result === true) {
+              res.render("secrets");
+            } else {
+              console.log(err);
+            }
+          });
         }
       }
     });
@@ -69,21 +76,25 @@ app
     const username = req.body.username;
     const password = req.body.password;
 
-    const newUser = new User({
-      email: username,
-      password: md5(password),
-    });
+    bcrypt.hash(password, saltRounds, (err, hash) => {
+      if (!err) {
+        const newUser = new User({
+          email: username,
+          password: hash,
+        });
 
-    newUser.save((err) => {
-      if (err) {
-        console.log(err);
+        newUser.save((err) => {
+          if (err) {
+            console.log(err);
+          } else {
+            res.render("secrets");
+          }
+        });
       } else {
-        res.render("secrets");
+        console.log(err);
       }
     });
   });
-
-console.log(process.env.SECRET, process.env.DATABASE);
 
 app.listen(5000, () => {
   console.log("Server started on Port 5000");
