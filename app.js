@@ -1,8 +1,10 @@
-import express from "express";
-import bodyParser from "body-parser";
-import ejs from "ejs";
-import mongoose from "mongoose";
-import encrypt from "mongoose-encryption";
+require("dotenv").config();
+
+const express = require("express");
+const bodyParser = require("body-parser");
+const ejs = require("ejs");
+const mongoose = require("mongoose");
+const encrypt = require("mongoose-encryption");
 
 const app = express();
 
@@ -14,7 +16,7 @@ app.use(
   })
 );
 
-mongoose.connect("mongodb://localhost:27017/userDB", {
+mongoose.connect(process.env.DATABASE, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -24,8 +26,10 @@ const userSchema = new mongoose.Schema({
   password: String,
 });
 
-const secret = "MyMothersMaidenNameIs...";
-userSchema.plugin(encrypt, { secret: secret, encryptedFields: ["password"] });
+userSchema.plugin(encrypt, {
+  secret: process.env.SECRET,
+  encryptedFields: ["password"],
+});
 
 const User = new mongoose.model("User", userSchema);
 
@@ -77,6 +81,8 @@ app
       }
     });
   });
+
+console.log(process.env.SECRET, process.env.DATABASE);
 
 app.listen(5000, () => {
   console.log("Server started on Port 5000");
