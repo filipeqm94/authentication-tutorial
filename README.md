@@ -70,3 +70,8 @@ Tutorial on Authentication and Security - Level 1 - 6.
 #### Notes:
 
 - With OAuth it is more convenient to user to login to the web application and more secure
+
+# Challenges
+
+- [x] Add Facebook OAuth
+- [ ] Add functionality for user to add Secret to Secrets after loging in
