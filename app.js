@@ -59,9 +59,14 @@ mongoose.set("useCreateIndex", true);
 
 const userSchema = new mongoose.Schema({
   email: String,
+  secret: String, // <---------- Add Secret submission button
   password: String,
   googleId: String, // <---------- Level 6
   facebookId: String, // <---------- Facebook Challenge
+});
+
+const secretSchema = new mongoose.Schema({
+  secret: String,
 });
 
 userSchema.plugin(passportLocalMongoose);
@@ -76,6 +81,7 @@ userSchema.plugin(encrypt, {
 */
 
 const User = new mongoose.model("User", userSchema);
+const Secret = new mongoose.model("Secret", secretSchema);
 
 // <---------- Level 5 ---------->
 passport.use(User.createStrategy());
@@ -104,7 +110,6 @@ passport.use(
       userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
     },
     function (accessToken, refreshToken, profile, cb) {
-      console.log(profile);
       User.findOrCreate(
         { googleId: profile.id, username: profile.displayName },
         function (err, user) {
@@ -124,7 +129,6 @@ passport.use(
       callbackURL: "http://localhost:5000/auth/facebook/secrets",
     },
     function (accessToken, refreshToken, profile, cb) {
-      console.log(profile);
       User.findOrCreate(
         { facebookId: profile.id, username: profile.displayName },
         function (err, user) {
@@ -210,12 +214,39 @@ app
   });
 
 app.route("/secrets").get((req, res) => {
-  if (req.isAuthenticated()) {
-    res.render("secrets");
-  } else {
-    res.redirect("/login");
-  }
+  User.find({ secret: { $ne: null } }, (err, foundUsers) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.render("secrets", { usersWithSecrets: foundUsers });
+    }
+  });
 });
+
+app
+  .route("/submit")
+  .get((req, res) => {
+    if (req.isAuthenticated()) {
+      res.render("submit");
+    } else {
+      res.redirect("/login");
+    }
+  })
+  .post((req, res) => {
+    const secret = req.body.secret;
+
+    User.findOne({ _id: req.user.id }, (err, foundUser) => {
+      if (!err) {
+        if (foundUser) {
+          foundUser.secret = secret;
+          foundUser.save();
+          res.redirect("/secrets");
+        }
+      } else {
+        console.log(err);
+      }
+    });
+  });
 
 app.route("/logout").get((req, res) => {
   req.logout();

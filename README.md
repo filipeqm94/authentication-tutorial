@@ -74,4 +74,4 @@ Tutorial on Authentication and Security - Level 1 - 6.
 # Challenges
 
 - [x] Add Facebook OAuth
-- [ ] Add functionality for user to add Secret to Secrets after loging in
+- [x] Add functionality for user to add Secret to Secrets after loging in
