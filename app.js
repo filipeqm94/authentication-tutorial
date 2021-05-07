@@ -26,6 +26,9 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const findOrCreate = require("mongoose-findorcreate");
 
+// <---------- Facebook Oauth Challenge ---------->
+const FacebookStrategy = require("passport-facebook");
+
 const app = express();
 
 app.use(express.static("public"));
@@ -58,6 +61,7 @@ const userSchema = new mongoose.Schema({
   email: String,
   password: String,
   googleId: String, // <---------- Level 6
+  facebookId: String, // <---------- Facebook Challenge
 });
 
 userSchema.plugin(passportLocalMongoose);
@@ -101,9 +105,32 @@ passport.use(
     },
     function (accessToken, refreshToken, profile, cb) {
       console.log(profile);
-      User.findOrCreate({ googleId: profile.id }, function (err, user) {
-        return cb(err, user);
-      });
+      User.findOrCreate(
+        { googleId: profile.id, username: profile.displayName },
+        function (err, user) {
+          return cb(err, user);
+        }
+      );
+    }
+  )
+);
+
+// <---------- Facebook Strategy ----------->
+passport.use(
+  new FacebookStrategy(
+    {
+      clientID: process.env.FACEBOOK_ID,
+      clientSecret: process.env.FACEBOOK_SECRET,
+      callbackURL: "http://localhost:5000/auth/facebook/secrets",
+    },
+    function (accessToken, refreshToken, profile, cb) {
+      console.log(profile);
+      User.findOrCreate(
+        { facebookId: profile.id, username: profile.displayName },
+        function (err, user) {
+          return cb(err, user);
+        }
+      );
     }
   )
 );
@@ -120,6 +147,18 @@ app.get(
 app.get(
   "/auth/google/secrets",
   passport.authenticate("google", { failureRedirect: "/login" }),
+  function (req, res) {
+    // Successful authentication, redirect home.
+    res.redirect("/secrets");
+  }
+);
+
+// <---------- Facebook Challenge ---------->
+app.get("/auth/facebook", passport.authenticate("facebook"));
+
+app.get(
+  "/auth/facebook/secrets",
+  passport.authenticate("facebook", { failureRedirect: "/login" }),
   function (req, res) {
     // Successful authentication, redirect home.
     res.redirect("/secrets");
